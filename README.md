@@ -1,4 +1,4 @@
-# AspectOfTheBeastBear
+# Aspect Of The Beast: Bear
 
 https://github.com/JustinFreitas/AspectOfTheBeastBear
 
