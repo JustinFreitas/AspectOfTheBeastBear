@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<root version="3.3">
+	<properties>
+		<name>Feature: Aspect of the Beast - Bear</name>
+		<version>1.0</version>
+		<loadorder>998</loadorder>
+		<author>Justin Freitas</author>
+		<description>In 5e, a Barbarian's Aspect of the Beast (Bear) can double carrying capacity.</description>
+		<ruleset>
+			<name>5E</name>
+		</ruleset>
+	</properties>
+
+	<base>
+		<script name="AspectOfTheBeast_Bear" file="scripts/aspect_of_the_beast_bear.lua" />
+		<icon name="bear_icon" file="graphics/icons/bear_icon.png" />
+	</base>
+</root>
