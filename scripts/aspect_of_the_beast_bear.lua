@@ -1,9 +1,11 @@
-function onInit()
-	-- Here we name our extension, copyright, and author (Lua handles most special characters as per other languages, where \r is a carriage return).
-	local msg = { sender = "", font = "emotefont", icon = "bear_icon" }
-	msg.text = "Aspect of the Beast: Bear v1.0, FGC/FGU, 5E" .. "\r" .. "Copyright 2016-21 Justin Freitas (11/14/21)"
-	ChatManager.registerLaunchMessage(msg)
+-- (c) Copyright Justin Freitas 2021+ except where explicitly stated otherwise.
+-- Fantasy Grounds is Copyright (c) 2004-2021 SmiteWorks USA LLC.
+-- Copyright to other material within this file may be held by other Individuals and/or Entities.
+-- Nothing in or from this LUA file in printed, electronic and/or any other form may be used, copied,
+-- transmitted or otherwise manipulated in ANY way without the explicit written consent of
+-- Justin Freitas or, where applicable, any and all other Copyright holders.
 
+function onInit()
 	-- Because of the way that the inventory window works, the override will only be called on update to strength or traits (not features).
 	CharManager.getEncumbranceMultAspectOfTheBeastBear = CharManager.getEncumbranceMult
 	CharManager.getEncumbranceMult = getEncumbranceMultOverride
