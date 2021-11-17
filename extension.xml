@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <root version="3.3">
-	<announcement text="Aspect of the Beast: Bear v1.0, FGC/FGU, 5E\rCopyright 2021 Justin Freitas (11/14/21)" font="emotefont" icon="bear_icon" />
+	<announcement text="Aspect of the Beast: Bear v1.1, FGC/FGU, 5E\rCopyright 2021 Justin Freitas (11/14/21)" font="emotefont" icon="bear_icon" />
 	<properties>
 		<name>Feature: Aspect of the Beast - Bear</name>
-		<version>1.0</version>
+		<version>1.1</version>
 		<loadorder>998</loadorder>
 		<author>Justin Freitas</author>
 		<description>In 5e, a Barbarian's Aspect of the Beast (Bear) can double carrying capacity.</description>
