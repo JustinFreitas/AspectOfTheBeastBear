@@ -6,7 +6,7 @@
 		<version>1.1</version>
 		<loadorder>998</loadorder>
 		<author>Justin Freitas</author>
-		<description>In 5e, a Barbarian's Aspect of the Beast (Bear) can double carrying capacity.</description>
+		<description>Double encumbrance limits if character is a barbarian of level six or higher and has Aspect of the Beast: Bear in their Features.</description>
 		<ruleset>
 			<name>5E</name>
 		</ruleset>
