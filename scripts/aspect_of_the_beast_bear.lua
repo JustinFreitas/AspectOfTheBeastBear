@@ -46,6 +46,7 @@ function isBarbarianOfLevelSixOrHigher(nodeChar)
 end
 
 function onFeatureNameAddOrUpdate(nodeFeatureName)
+	-- Node hierarchy to character sheet: charsheet.featurelist.feature.name
 	local nodeChar = nodeFeatureName.getParent().getParent().getParent()
 	if not isBarbarianOfLevelSixOrHigher(nodeChar) then return end
 
