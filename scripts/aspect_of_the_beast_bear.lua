@@ -6,11 +6,9 @@
 -- Justin Freitas or, where applicable, any and all other Copyright holders.
 
 function onInit()
-	-- Because of the way that the inventory window works, the override will only be called on update to strength or traits (not features).
 	CharManager.getEncumbranceMultAspectOfTheBeastBear = CharManager.getEncumbranceMult
 	CharManager.getEncumbranceMult = getEncumbranceMultOverride
 
-	-- Handlers to watch the feature list and call add/change handlers that update the character sheet inventory window if it happens to be open/loaded.
 	local featureNamePath = "charsheet.*.featurelist.*.name"
 	DB.addHandler(featureNamePath, "onAdd", onFeatureNameAddOrUpdate)
 	DB.addHandler(featureNamePath, "onUpdate", onFeatureNameAddOrUpdate)
@@ -20,8 +18,7 @@ end
 -- See: <number_linked name="encumbrancebase" source="encumbrance.encumbered">
 function getEncumbranceMultOverride(nodeChar)
 	local mult = CharManager.getEncumbranceMultAspectOfTheBeastBear(nodeChar)
-	if isBarbarianOfLevelSixOrHigher(nodeChar) and
-	   hasAspectOfTheBeastBear(nodeChar) then
+	if isBarbarianOfLevelSixOrHigher(nodeChar) and hasAspectOfTheBeastBear(nodeChar) then
 		mult = mult * 2
 	end
 
@@ -30,7 +27,6 @@ end
 
 function hasAspectOfTheBeastBear(nodeChar)
 	for _, nodeFeature in pairs(DB.getChildren(nodeChar, "featurelist")) do
-		-- Allow for any number of spaces at each word and any non-alphanumeric separator zero or more times.
 		if string.match(DB.getValue(nodeFeature, "name", ""):lower(), "^%W*aspect%W+of%W+the%W+beast%W*bear%W*$") then
 			return true
 		end
@@ -51,19 +47,17 @@ end
 
 function onFeatureNameAddOrUpdate(nodeFeatureName)
 	local nodeChar = nodeFeatureName.getParent().getParent().getParent()
-	-- Operate on barbarians of level 6 or higher only.
 	if not isBarbarianOfLevelSixOrHigher(nodeChar) then return end
 
-	-- If the character sheet has is open and the inventory tab has been visited, we'll need to update that view since it's not automatic by default.
 	local windowCharsheet = Interface.findWindow("charsheet", nodeChar)
 	return updateInventoryPaneEncumbranceBaseIfLoaded(windowCharsheet)
 end
 
 function updateInventoryPaneEncumbranceBaseIfLoaded(w)
 	if not (w and w.inventory and w.inventory.subwindow and w.inventory.subwindow.contents and w.inventory.subwindow.contents.subwindow
-			and w.inventory.subwindow.contents.subwindow.encumbrancebase and w.inventory.subwindow.contents.subwindow.encumbrancebase.onTraitsUpdated) then return end
+			and w.inventory.subwindow.contents.subwindow.encumbrancebase
+			and w.inventory.subwindow.contents.subwindow.encumbrancebase.onTraitsUpdated) then return end
 
-	-- The inventory tab is loaded, update the encumbrancebase value.
 	-- See: <number_linked name="encumbrancebase" source="encumbrance.encumbered">
 	w.inventory.subwindow.contents.subwindow.encumbrancebase.onTraitsUpdated()
 end
