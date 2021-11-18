@@ -11,17 +11,17 @@ function onInit()
 	CharManager.getEncumbranceMult = getEncumbranceMultOverride
 
 	-- Handlers to watch the feature list and call add/change handlers that update the character sheet inventory window if it happens to be open/loaded.
-	DB.addHandler("charsheet.*.featurelist.*.name", "onAdd", onFeatureNameAdd)
-	DB.addHandler("charsheet.*.featurelist.*.name", "onUpdate", onFeatureNameUpdate)
+	local featureNamePath = "charsheet.*.featurelist.*.name"
+	DB.addHandler(featureNamePath, "onAdd", onFeatureNameAddOrUpdate)
+	DB.addHandler(featureNamePath, "onUpdate", onFeatureNameAddOrUpdate)
 end
 
 -- This is entered on strength change or trait change (not feature) due to the way record_char_inventory.xml works.
 -- See: <number_linked name="encumbrancebase" source="encumbrance.encumbered">
 function getEncumbranceMultOverride(nodeChar)
 	local mult = CharManager.getEncumbranceMultAspectOfTheBeastBear(nodeChar)
-	if not isBarbarianOfLevelSixOrHigher(nodeChar) then return mult end
-
-	if hasAspectOfTheBeastBear(nodeChar) then
+	if isBarbarianOfLevelSixOrHigher(nodeChar) and
+	   hasAspectOfTheBeastBear(nodeChar) then
 		mult = mult * 2
 	end
 
@@ -30,8 +30,8 @@ end
 
 function hasAspectOfTheBeastBear(nodeChar)
 	for _, nodeFeature in pairs(DB.getChildren(nodeChar, "featurelist")) do
-		-- Allow for any number of spaces at each word and allow for either dash or colon separator.
-		if string.match(DB.getValue(nodeFeature, "name", ""):lower(), "^%s*aspect%s+of%s+the%s+beast%s*[-:]%s*bear%s*$") then
+		-- Allow for any number of spaces at each word and any non-alphanumeric separator zero or more times.
+		if string.match(DB.getValue(nodeFeature, "name", ""):lower(), "^%s*aspect%s+of%s+the%s+beast%W*bear%W*$") then
 			return true
 		end
 	end
@@ -49,29 +49,21 @@ function isBarbarianOfLevelSixOrHigher(nodeChar)
 	return false
 end
 
-function onFeatureNameAdd(nodeFeatureNameAdded)
-	updateInventoryContents(nodeFeatureNameAdded)
-end
-
-function onFeatureNameUpdate(nodeFeatureNameUpdated)
-	updateInventoryContents(nodeFeatureNameUpdated)
-end
-
-function updateInventoryContents(nodeFeatureName)
-	if not nodeFeatureName then return end
-	local nodeFeatureRecord = nodeFeatureName.getParent(); if not nodeFeatureRecord then return end
-	local nodeFeatureList = nodeFeatureRecord.getParent(); if not nodeFeatureList then return end
-	local nodeChar = nodeFeatureList.getParent(); if not nodeChar then return end
-
+function onFeatureNameAddOrUpdate(nodeFeatureName)
+	local nodeChar = nodeFeatureName.getParent().getParent().getParent()
 	-- Operate on barbarians of level 6 or higher only.
 	if not isBarbarianOfLevelSixOrHigher(nodeChar) then return end
 
 	-- If the character sheet has is open and the inventory tab has been visited, we'll need to update that view since it's not automatic by default.
-	local wCharsheet = Interface.findWindow("charsheet", nodeChar)
-	if not wCharsheet or not wCharsheet.inventory or not wCharsheet.inventory.subwindow
-	   or not wCharsheet.inventory.subwindow.contents or not wCharsheet.inventory.subwindow.contents.subwindow
-	   or not wCharsheet.inventory.subwindow.contents.subwindow.encumbrancebase then return end
+	local windowCharsheet = Interface.findWindow("charsheet", nodeChar)
+	return updateInventoryPaneEncumbranceBaseIfLoaded(windowCharsheet)
+end
 
-	-- The condition has been met and we have to update the encumbrancebase value
-	wCharsheet.inventory.subwindow.contents.subwindow.encumbrancebase.onTraitsUpdated()
+function updateInventoryPaneEncumbranceBaseIfLoaded(w)
+	if not (w and w.inventory and w.inventory.subwindow and w.inventory.subwindow.contents and w.inventory.subwindow.contents.subwindow
+			and w.inventory.subwindow.contents.subwindow.encumbrancebase) then return end
+
+	-- The inventory tab is loaded, update the encumbrancebase value.
+	-- See: <number_linked name="encumbrancebase" source="encumbrance.encumbered">
+	w.inventory.subwindow.contents.subwindow.encumbrancebase.onTraitsUpdated()
 end
