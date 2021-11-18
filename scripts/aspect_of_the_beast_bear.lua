@@ -31,7 +31,7 @@ end
 function hasAspectOfTheBeastBear(nodeChar)
 	for _, nodeFeature in pairs(DB.getChildren(nodeChar, "featurelist")) do
 		-- Allow for any number of spaces at each word and any non-alphanumeric separator zero or more times.
-		if string.match(DB.getValue(nodeFeature, "name", ""):lower(), "^%s*aspect%s+of%s+the%s+beast%W*bear%W*$") then
+		if string.match(DB.getValue(nodeFeature, "name", ""):lower(), "^%W*aspect%W+of%W+the%W+beast%W*bear%W*$") then
 			return true
 		end
 	end
@@ -61,7 +61,7 @@ end
 
 function updateInventoryPaneEncumbranceBaseIfLoaded(w)
 	if not (w and w.inventory and w.inventory.subwindow and w.inventory.subwindow.contents and w.inventory.subwindow.contents.subwindow
-			and w.inventory.subwindow.contents.subwindow.encumbrancebase) then return end
+			and w.inventory.subwindow.contents.subwindow.encumbrancebase and w.inventory.subwindow.contents.subwindow.encumbrancebase.onTraitsUpdated) then return end
 
 	-- The inventory tab is loaded, update the encumbrancebase value.
 	-- See: <number_linked name="encumbrancebase" source="encumbrance.encumbered">
