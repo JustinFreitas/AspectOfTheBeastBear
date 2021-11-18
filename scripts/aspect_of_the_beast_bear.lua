@@ -15,7 +15,8 @@ function onInit()
 	DB.addHandler("charsheet.*.featurelist.*.name", "onUpdate", onFeatureNameUpdate)
 end
 
--- This is entered on strength change or trait change (not feature) due to the way record_char_inventory.xml works (see <number_linked name="encumbrancebase" source="encumbrance.encumbered">).
+-- This is entered on strength change or trait change (not feature) due to the way record_char_inventory.xml works.
+-- See: <number_linked name="encumbrancebase" source="encumbrance.encumbered">
 function getEncumbranceMultOverride(nodeChar)
 	local mult = CharManager.getEncumbranceMultAspectOfTheBeastBear(nodeChar)
 	if not isBarbarianOfLevelSixOrHigher(nodeChar) then return mult end
