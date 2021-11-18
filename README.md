@@ -13,3 +13,4 @@ Future Enhancements:
 
 Changelist:
 - v1.0 - Initial version.
+- v1.1 - Improvements to conform to FGU and upcoming standards. Improvements in code structure.  Matching/regex improvements for flexibility and reliability.  Function renaming for clarity.
