@@ -51,7 +51,7 @@ function onFeatureNameAddOrUpdate(nodeFeatureName)
 	if not isBarbarianOfLevelSixOrHigher(nodeChar) then return end
 
 	local windowCharsheet = Interface.findWindow("charsheet", nodeChar)
-	return updateInventoryPaneEncumbranceBaseIfLoaded(windowCharsheet)
+	updateInventoryPaneEncumbranceBaseIfLoaded(windowCharsheet)
 end
 
 function updateInventoryPaneEncumbranceBaseIfLoaded(w)
