@@ -2,7 +2,7 @@
 
 https://github.com/JustinFreitas/AspectOfTheBeastBear
 
-Aspect Of The Beast: Bear, by Justin Freitas
+Aspect Of The Beast: Bear v1.1, by Justin Freitas
 
 ReadMe and Usage Notes
 
