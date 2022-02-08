@@ -9,11 +9,13 @@ function onInit()
 	DB.addHandler(featureNamePath, "onUpdate", onFeatureNameAddOrUpdate)
 end
 
--- This is entered on strength change or trait change (not feature) due to the way record_char_inventory.xml works.
+-- This is entered on strength change or trait change (not feature)
+-- due to the way record_char_inventory.xml works.
 -- See: <number_linked name="encumbrancebase" source="encumbrance.encumbered">
 function getEncumbranceMultOverride(nodeChar)
 	local mult = getEncumbranceMult_orig(nodeChar)
-	if isBarbarianOfLevelSixOrHigher(nodeChar) and hasAspectOfTheBeastBear(nodeChar) then
+	if isBarbarianOfLevelSixOrHigher(nodeChar) and
+	   hasAspectOfTheBeastBear(nodeChar) then
 		mult = mult * 2
 	end
 
