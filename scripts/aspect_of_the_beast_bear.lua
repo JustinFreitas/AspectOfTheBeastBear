@@ -59,7 +59,9 @@ function updateInventoryPaneEncumbranceBaseIfLoaded(w)
 			  and w.inventory.subwindow.contents
 			  and w.inventory.subwindow.contents.subwindow
 			  and w.inventory.subwindow.contents.subwindow.encumbrancebase
-			  and w.inventory.subwindow.contents.subwindow.encumbrancebase.onTraitsUpdated) then return end
+			  and w.inventory.subwindow.contents.subwindow.encumbrancebase.onTraitsUpdated) then
+		return
+	end
 
 	-- See: <number_linked name="encumbrancebase" source="encumbrance.encumbered">
 	w.inventory.subwindow.contents.subwindow.encumbrancebase.onTraitsUpdated()
