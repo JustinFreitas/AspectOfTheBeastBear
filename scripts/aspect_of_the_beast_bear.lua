@@ -1,43 +1,54 @@
--- (c) Copyright Justin Freitas 2021+ except where explicitly stated otherwise.
--- Fantasy Grounds is Copyright (c) 2004-2021 SmiteWorks USA LLC.
--- Copyright to other material within this file may be held by other Individuals and/or Entities.
--- Nothing in or from this LUA file in printed, electronic and/or any other form may be used, copied,
--- transmitted or otherwise manipulated in ANY way without the explicit written consent of
--- Justin Freitas or, where applicable, any and all other Copyright holders.
+local getEncumbranceMult_orig
+local bBearFromFGU
 
 function onInit()
-	CharManager.getEncumbranceMultAspectOfTheBeastBear = CharManager.getEncumbranceMult
+	getEncumbranceMult_orig = CharManager.getEncumbranceMult
 	CharManager.getEncumbranceMult = getEncumbranceMultOverride
 
 	local featureNamePath = "charsheet.*.featurelist.*.name"
 	DB.addHandler(featureNamePath, "onAdd", onFeatureNameAddOrUpdate)
 	DB.addHandler(featureNamePath, "onUpdate", onFeatureNameAddOrUpdate)
+	bBearFromFGU = checkBearFromFGU()
 end
 
--- This is entered on strength change or trait change (not feature) due to the way record_char_inventory.xml works.
+function checkBearFromFGU()
+	local nMajor, nMinor, nPatch = Interface.getVersion()
+	return nMajor >= 4 and nMinor >= 1 and nPatch >= 14
+end
+
+-- This is entered on strength change or trait change (not feature)
+-- due to the way record_char_inventory.xml works.
 -- See: <number_linked name="encumbrancebase" source="encumbrance.encumbered">
 function getEncumbranceMultOverride(nodeChar)
-	local mult = CharManager.getEncumbranceMultAspectOfTheBeastBear(nodeChar)
-	if isBarbarianOfLevelSixOrHigher(nodeChar) and hasAspectOfTheBeastBear(nodeChar) then
+	local mult = getEncumbranceMult_orig(nodeChar)
+	if isBarbarianOfLevelSixOrHigher(nodeChar) and
+	   hasAspectOfTheBeastBearIndependentOfFGU(nodeChar) then
 		mult = mult * 2
 	end
 
 	return mult
 end
 
-function hasAspectOfTheBeastBear(nodeChar)
+function hasAspectOfTheBeastBearIndependentOfFGU(nodeChar)
+	local bBear, bBeastBear
 	for _, nodeFeature in pairs(DB.getChildren(nodeChar, "featurelist")) do
-		if string.match(DB.getValue(nodeFeature, "name", ""):lower(), "^%W*aspect%W+of%W+the%W+beast%W*bear%W*$") then
-			return true
+		local name = DB.getValue(nodeFeature, "name", ""):lower()
+		if string.match(name, "^%W*aspect%W+of%W+the%W+beast%W*bear%W*$") then
+			bBeastBear = true;
+		elseif string.match(name, "^%W*aspect%W+of%W+the%W+bear%W*$") then
+			bBear = true;
 		end
 	end
 
-	return false
+	return (bBear and not bBearFromFGU) or
+		   (bBeastBear and not bBearFromFGU) or
+		   (bBeastBear and not bBear and bBearFromFGU)
 end
 
 function isBarbarianOfLevelSixOrHigher(nodeChar)
 	for _, nodeClass in pairs(DB.getChildren(nodeChar, "classes")) do
-		if DB.getValue(nodeClass, "name", ""):lower() == "barbarian" and DB.getValue(nodeClass, "level", 0) >= 6 then
+		if DB.getValue(nodeClass, "name", ""):lower() == "barbarian" and
+		   DB.getValue(nodeClass, "level", 0) >= 6 then
 			return true
 		end
 	end
@@ -55,9 +66,14 @@ function onFeatureNameAddOrUpdate(nodeFeatureName)
 end
 
 function updateInventoryPaneEncumbranceBaseIfLoaded(w)
-	if not (w and w.inventory and w.inventory.subwindow and w.inventory.subwindow.contents and w.inventory.subwindow.contents.subwindow
-			and w.inventory.subwindow.contents.subwindow.encumbrancebase
-			and w.inventory.subwindow.contents.subwindow.encumbrancebase.onTraitsUpdated) then return end
+	if not (w and w.inventory
+			  and w.inventory.subwindow
+			  and w.inventory.subwindow.contents
+			  and w.inventory.subwindow.contents.subwindow
+			  and w.inventory.subwindow.contents.subwindow.encumbrancebase
+			  and w.inventory.subwindow.contents.subwindow.encumbrancebase.onTraitsUpdated) then
+		return
+	end
 
 	-- See: <number_linked name="encumbrancebase" source="encumbrance.encumbered">
 	w.inventory.subwindow.contents.subwindow.encumbrancebase.onTraitsUpdated()
