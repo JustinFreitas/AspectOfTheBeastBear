@@ -1,4 +1,5 @@
 local getEncumbranceMult_orig
+local bBearFromFGU
 
 function onInit()
 	getEncumbranceMult_orig = CharManager.getEncumbranceMult
@@ -7,6 +8,12 @@ function onInit()
 	local featureNamePath = "charsheet.*.featurelist.*.name"
 	DB.addHandler(featureNamePath, "onAdd", onFeatureNameAddOrUpdate)
 	DB.addHandler(featureNamePath, "onUpdate", onFeatureNameAddOrUpdate)
+	bBearFromFGU = checkBearFromFGU()
+end
+
+function checkBearFromFGU()
+	local nMajor, nMinor, nPatch = Interface.getVersion()
+	return nMajor >= 4 and nMinor >= 1 and nPatch >= 14
 end
 
 -- This is entered on strength change or trait change (not feature)
@@ -15,22 +22,27 @@ end
 function getEncumbranceMultOverride(nodeChar)
 	local mult = getEncumbranceMult_orig(nodeChar)
 	if isBarbarianOfLevelSixOrHigher(nodeChar) and
-	   hasAspectOfTheBeastBear(nodeChar) then
+	   hasAspectOfTheBeastBearIndependentOfFGU(nodeChar) then
 		mult = mult * 2
 	end
 
 	return mult
 end
 
-function hasAspectOfTheBeastBear(nodeChar)
+function hasAspectOfTheBeastBearIndependentOfFGU(nodeChar)
+	local bBear, bBeastBear
 	for _, nodeFeature in pairs(DB.getChildren(nodeChar, "featurelist")) do
 		local name = DB.getValue(nodeFeature, "name", ""):lower()
 		if string.match(name, "^%W*aspect%W+of%W+the%W+beast%W*bear%W*$") then
-			return true
+			bBeastBear = true;
+		elseif string.match(name, "^%W*aspect%W+of%W+the%W+bear%W*$") then
+			bBear = true;
 		end
 	end
 
-	return false
+	return (bBear and not bBearFromFGU) or
+		   (bBeastBear and not bBearFromFGU) or
+		   (bBeastBear and not bBear and bBearFromFGU)
 end
 
 function isBarbarianOfLevelSixOrHigher(nodeChar)
