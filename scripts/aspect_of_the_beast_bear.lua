@@ -2,13 +2,18 @@ local getEncumbranceMult_orig
 local bBearFromFGU
 
 function onInit()
-	getEncumbranceMult_orig = CharManager.getEncumbranceMult
-	CharManager.getEncumbranceMult = getEncumbranceMultOverride
-
 	local featureNamePath = "charsheet.*.featurelist.*.name"
 	DB.addHandler(featureNamePath, "onAdd", onFeatureNameAddOrUpdate)
 	DB.addHandler(featureNamePath, "onUpdate", onFeatureNameAddOrUpdate)
 	bBearFromFGU = checkBearFromFGU()
+
+	if bBearFromFGU then
+		getEncumbranceMult_orig = CharEncumbranceManager5E.getEncumbranceMult
+		CharEncumbranceManager5E.getEncumbranceMult = getEncumbranceMultOverride
+	else
+		getEncumbranceMult_orig = CharManager.getEncumbranceMult
+		CharManager.getEncumbranceMult = getEncumbranceMultOverride
+	end
 end
 
 function checkBearFromFGU()
@@ -22,14 +27,14 @@ end
 function getEncumbranceMultOverride(nodeChar)
 	local mult = getEncumbranceMult_orig(nodeChar)
 	if isBarbarianOfLevelSixOrHigher(nodeChar) and
-	   hasAspectOfTheBeastBearIndependentOfFGU(nodeChar) then
+	   hasQualifyingBearFeature(nodeChar) then
 		mult = mult * 2
 	end
 
 	return mult
 end
 
-function hasAspectOfTheBeastBearIndependentOfFGU(nodeChar)
+function hasQualifyingBearFeature(nodeChar)
 	local bBear, bBeastBear
 	for _, nodeFeature in pairs(DB.getChildren(nodeChar, "featurelist")) do
 		local name = DB.getValue(nodeFeature, "name", ""):lower()
@@ -61,8 +66,12 @@ function onFeatureNameAddOrUpdate(nodeFeatureName)
 	local nodeChar = nodeFeatureName.getParent().getParent().getParent()
 	if not isBarbarianOfLevelSixOrHigher(nodeChar) then return end
 
-	local windowCharsheet = Interface.findWindow("charsheet", nodeChar)
-	updateInventoryPaneEncumbranceBaseIfLoaded(windowCharsheet)
+	if bBearFromFGU then
+		CharEncumbranceManager5E.updateEncumbranceLimit(nodeChar)
+	else
+		local windowCharsheet = Interface.findWindow("charsheet", nodeChar)
+		updateInventoryPaneEncumbranceBaseIfLoaded(windowCharsheet)
+	end
 end
 
 function updateInventoryPaneEncumbranceBaseIfLoaded(w)
