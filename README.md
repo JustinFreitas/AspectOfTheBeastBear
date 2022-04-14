@@ -2,7 +2,7 @@
 
 https://github.com/JustinFreitas/AspectOfTheBeastBear
 
-Aspect Of The Beast: Bear v1.2.1, by Justin Freitas
+Aspect Of The Beast: Bear v1.2.2, by Justin Freitas
 
 ReadMe and Usage Notes
 
@@ -16,3 +16,4 @@ Changelist:
 - v1.1 - Improvements to conform to FGU and upcoming standards. Improvements in code structure.  Matching/regex improvements for flexibility and reliability.  Function renaming for clarity.
 - v1.2 - Fixed the extension to work with the FGU 4.1.14+ Aspect of the Bear functionality and not double the bonus a second time.
 - v1.2.1 - I had the manager override all wrong for FGU, so I went through everything and got it all correct now.  This is a bugfix release only to enable the v1.2 functionality.
+- v1.2.2 - Fixed the version check so that it works correctly in future cases.

@@ -18,7 +18,9 @@ end
 
 function checkBearFromFGU()
 	local nMajor, nMinor, nPatch = Interface.getVersion()
-	return nMajor >= 4 and nMinor >= 1 and nPatch >= 14
+	if nMajor >= 5 then return true end
+	if nMajor == 4 and nMinor >= 2 then return true end
+	return nMajor == 4 and nMinor == 1 and nPatch >= 14
 end
 
 -- This is entered on strength change or trait change (not feature)
