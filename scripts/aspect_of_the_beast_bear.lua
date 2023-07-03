@@ -38,7 +38,7 @@ end
 
 function hasQualifyingBearFeature(nodeChar)
 	local bBear, bBeastBear
-	for _, nodeFeature in pairs(DB.getChildren(nodeChar, "featurelist")) do
+	for _,nodeFeature in pairs(DB.getChildren(nodeChar, "featurelist")) do
 		local name = DB.getValue(nodeFeature, "name", ""):lower()
 		if string.match(name, "^%W*aspect%W+of%W+the%W+beast%W*bear%W*$") then
 			bBeastBear = true;
@@ -53,7 +53,7 @@ function hasQualifyingBearFeature(nodeChar)
 end
 
 function isBarbarianOfLevelSixOrHigher(nodeChar)
-	for _, nodeClass in pairs(DB.getChildren(nodeChar, "classes")) do
+	for _,nodeClass in pairs(DB.getChildren(nodeChar, "classes")) do
 		if DB.getValue(nodeClass, "name", ""):lower() == "barbarian" and
 		   DB.getValue(nodeClass, "level", 0) >= 6 then
 			return true
