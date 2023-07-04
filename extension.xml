@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <root version="3.3">
-	<announcement text="Aspect of the Beast: Bear v1.3, FGC/FGU 5E\r2021-23 Justin Freitas, 7/2/23" font="emotefont" icon="bear_icon" />
+	<announcement text="Aspect of the Beast: Bear v1.4, FGC/FGU 5E\r2021-23 Justin Freitas, 7/4/23" font="emotefont" icon="bear_icon" />
 	<properties>
 		<name>Feature: Aspect of the Beast - Bear</name>
-		<version>1.3</version>
+		<version>1.4</version>
 		<loadorder>9998</loadorder>
 		<author>Justin Freitas</author>
 		<description>Double encumbrance limits if character is a barbarian of level six or higher and has Aspect of the Beast: Bear in their Features.</description>
