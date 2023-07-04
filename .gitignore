@@ -5,3 +5,5 @@
 scripts/.luacheckrc
 scripts/luacheck.exe
 readme.txt
+build/out/AspectOfTheBeastBear.ext
+build/out/AspectOfTheBeastBear.zip
